@@ -7,22 +7,39 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
-	"github.com/pursuit/gateway/internal"
-	"github.com/pursuit/gateway/internal/config"
+	"github.com/pursuit/gateway/internal/proto/out"
+	"github.com/pursuit/gateway/internal/rest"
+
+	"google.golang.org/grpc"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 func main() {
 	defer log.Println("Shutdown the server success")
 
-	handler := internal.NewServer(config.Instance("./internal/config"))
+	portalConn, err := grpc.Dial(":5001", grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
+	defer portalConn.Close()
+
+	userClient := proto.NewUserClient(portalConn)
+
+	userHandler := rest.Handler{
+		UserClient: userClient,
+	}
+	r := chi.NewRouter()
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"*"},
+	}))
+	r.Post("/users", userHandler.CreateUser)
 
 	server := &http.Server{
-		Addr:         ":5003",
-		Handler:      handler,
-		ReadTimeout:  310 * time.Second,
-		WriteTimeout: 310 * time.Second,
+		Addr:    ":5003",
+		Handler: r,
 	}
 
 	go func() {
