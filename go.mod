@@ -3,7 +3,8 @@ module github.com/pursuit/gateway
 go 1.16
 
 require (
-	github.com/rs/cors v1.7.0
-	github.com/stretchr/testify v1.7.0
-	gopkg.in/yaml.v2 v2.4.0
+	github.com/go-chi/chi/v5 v5.0.3
+	github.com/go-chi/cors v1.2.0
+	google.golang.org/grpc v1.38.0
+	google.golang.org/protobuf v1.25.0
 )
