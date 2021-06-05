@@ -12,7 +12,7 @@ import (
 )
 
 type Handler struct {
-	UserClient pursuit_api_portal_proto.UserClient
+	UserClient portal_proto.UserClient
 }
 
 func convertGrpcError(err error) (string, int) {
@@ -59,7 +59,7 @@ func (this Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	payload := pursuit_api_portal_proto.CreateUserPayload{
+	payload := portal_proto.CreateUserPayload{
 		Username: jsonPayload.Username,
 		Password: jsonPayload.Password[1 : len(jsonPayload.Password)-1],
 	}
