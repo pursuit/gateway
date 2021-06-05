@@ -5,14 +5,14 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/pursuit/gateway/internal/proto/out"
+	"github.com/pursuit/gateway/internal/proto/out/api/portal"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 type Handler struct {
-	UserClient proto.UserClient
+	UserClient pursuit_api_portal_proto.UserClient
 }
 
 func convertGrpcError(err error) (string, int) {
@@ -59,7 +59,7 @@ func (this Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	payload := proto.CreateUserPayload{
+	payload := pursuit_api_portal_proto.CreateUserPayload{
 		Username: jsonPayload.Username,
 		Password: jsonPayload.Password[1 : len(jsonPayload.Password)-1],
 	}
