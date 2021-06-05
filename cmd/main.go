@@ -26,7 +26,7 @@ func main() {
 	}
 	defer portalConn.Close()
 
-	userClient := pursuit_api_portal_proto.NewUserClient(portalConn)
+	userClient := portal_proto.NewUserClient(portalConn)
 
 	userHandler := rest.Handler{
 		UserClient: userClient,
