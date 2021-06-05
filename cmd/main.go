@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/pursuit/gateway/internal/proto/out"
+	"github.com/pursuit/gateway/internal/proto/out/api/portal"
 	"github.com/pursuit/gateway/internal/rest"
 
 	"google.golang.org/grpc"
@@ -26,7 +26,7 @@ func main() {
 	}
 	defer portalConn.Close()
 
-	userClient := proto.NewUserClient(portalConn)
+	userClient := pursuit_api_portal_proto.NewUserClient(portalConn)
 
 	userHandler := rest.Handler{
 		UserClient: userClient,
