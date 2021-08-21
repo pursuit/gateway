@@ -1,14 +1,11 @@
-include .env
-export $(shell sed 's/=.*//' .env)
-
 pretty:
-	gofmt -s -w .
+	go fmt `go list ./...`
 
 build:
-	go build cmd/main.go
+	docker build . -t pursuit-gateway-dock
 
-run: build
-	./main
+run:
+	docker run --net pursuit_network -p 5003:5003 pursuit-gateway-dock
 
 test:
-	go test `go list ./... | grep -v cmd`
+	go test `go list ./... | grep -v cmd | grep -v vendor`
