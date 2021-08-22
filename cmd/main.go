@@ -15,6 +15,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -35,6 +37,7 @@ func main() {
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
 	}))
+	r.Mount("/metrics", promhttp.Handler())
 	r.Post("/users", userHandler.CreateUser)
 
 	server := &http.Server{
