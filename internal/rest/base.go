@@ -41,6 +41,41 @@ type tempCreateUser struct {
 	Password json.RawMessage `json:"password"`
 }
 
+func (this Handler) Login(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(422)
+		return
+	}
+
+	var jsonPayload tempCreateUser
+	if err := json.Unmarshal(body, &jsonPayload); err != nil {
+		w.WriteHeader(422)
+		return
+	}
+
+	if len(jsonPayload.Password) < 3 {
+		w.WriteHeader(422)
+		return
+	}
+
+	payload := portal_proto.LoginPayload{
+		Username: jsonPayload.Username,
+		Password: jsonPayload.Password[1 : len(jsonPayload.Password)-1],
+	}
+
+	resp, err := this.UserClient.Login(r.Context(), &payload)
+	if err != nil {
+		sErr, httpStatus := convertGrpcError(err)
+		w.WriteHeader(httpStatus)
+		w.Write([]byte(sErr))
+		return
+	}
+
+	w.Write([]byte(resp.GetToken()))
+	w.WriteHeader(200)
+}
+
 func (this Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {

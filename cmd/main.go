@@ -39,6 +39,7 @@ func main() {
 	}))
 	r.Mount("/metrics", promhttp.Handler())
 	r.Post("/users", userHandler.CreateUser)
+	r.Post("/user-sessions", userHandler.Login)
 
 	server := &http.Server{
 		Addr:    ":5003",
